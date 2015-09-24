@@ -7,7 +7,7 @@ from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 
 from .forms import UserCreationForm
 from .forms import UserChangeForm
-from . import defautls as defs
+from . import defaults as defs
 
 User = get_user_model()
 

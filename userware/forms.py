@@ -7,9 +7,8 @@ from django.contrib.auth.forms import AuthenticationForm as DjangoAuthentication
 from django.contrib.auth.forms import PasswordResetForm as DjangoPasswordResetForm
 from django.contrib.auth.forms import PasswordChangeForm as DjangoPasswordChangeForm
 from django.contrib.auth.forms import SetPasswordForm as DjangoSetPasswordForm
-from django.contrib.auth.hashers import UNUSABLE_PASSWORD
 from django.contrib.auth import get_user_model
-from django.core.validators import email_re
+from django.utils.html import simple_email_re
 
 from toolware.utils.mixin import CleanSpacesMixin
 from activityware.utils import force_logout
@@ -141,16 +140,16 @@ class UserPasswordResetForm(DjangoPasswordResetForm):
         """
         Validates that an active user exists with the given username / email address.
         """
-
+        dummy_user = User()
+        dummy_user.set_unusable_password()
         username_or_email = self.cleaned_data["username_or_email"]
-        if email_re.match(username_or_email):
+        if simple_email_re.match(username_or_email):
             self.users_cache = User.objects.filter(email__iexact=username_or_email)
             if not len(self.users_cache):
                 raise forms.ValidationError(self.error_messages['unknown_email'])
             if not any(user.is_active for user in self.users_cache):
                 raise forms.ValidationError(self.error_messages['unknown_email'])
-            if any((user.password == UNUSABLE_PASSWORD)
-                   for user in self.users_cache):
+            if any(user.check_password() for user in self.users_cache):
                 raise forms.ValidationError(self.error_messages['unusable_email'])
             return username_or_email
         else:
@@ -159,8 +158,7 @@ class UserPasswordResetForm(DjangoPasswordResetForm):
                 raise forms.ValidationError(self.error_messages['unknown_username'])
             if not any(user.is_active for user in self.users_cache):
                 raise forms.ValidationError(self.error_messages['unknown_username'])
-            if any((user.password == UNUSABLE_PASSWORD)
-                   for user in self.users_cache):
+            if any(user.check_password() for user in self.users_cache):
                 raise forms.ValidationError(self.error_messages['unusable_username'])
             return username_or_email
 
