@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 from django.utils.html import simple_email_re
 
 from toolware.utils.mixin import CleanSpacesMixin
-from activityware.utils import force_logout
+from auditware.utils import force_logout
 
 from . import utils as util
 from . import defaults as defs
