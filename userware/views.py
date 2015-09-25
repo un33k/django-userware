@@ -49,7 +49,7 @@ class UserLogoutView(TemplateView):
             del request.session[defs.USERWARE_SWTICHED_USER_KEY]
         if request.user.is_authenticated():
             auth_logout(request)
-            messages.add_message(self.request, messages.SUCCESS, _('You are logged out'))
+            messages.add_message(self.request, messages.SUCCESS, _('You are now logged out'))
         return HttpResponseRedirect(defs.LOGOUT_REDIRECT_URL)
 
 
@@ -84,7 +84,8 @@ class UserLoginView(SensitivePostParametersMixin, CsrfProtectMixin,
         if self.request.session.test_cookie_worked():
             self.request.session.delete_test_cookie()
         messages.add_message(self.request, messages.SUCCESS,
-                    _("You are now logged in as '%s'." % self.request.user.username))
+                    _('You are now logged in as "{}" ({}).'.format(
+                        self.request.user.username, self.request.user.email)))
         return super(UserLoginView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
