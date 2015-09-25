@@ -84,7 +84,7 @@ class UserLoginView(SensitivePostParametersMixin, CsrfProtectMixin,
         if self.request.session.test_cookie_worked():
             self.request.session.delete_test_cookie()
         messages.add_message(self.request, messages.SUCCESS,
-                    _('You are now logged in as "{}" ({}).'.format(
+                    _('You are now logged in as "{}" ( {} ).'.format(
                         self.request.user.username, self.request.user.email)))
         return super(UserLoginView, self).form_valid(form)
 
@@ -115,7 +115,7 @@ class UserChangePassword(SensitivePostParametersMixin, CsrfProtectMixin,
     form_class = UserPasswordChangeForm
     success_url = defs.LOGIN_REDIRECT_URL
     message_text = {
-        'success': _('Your password changed.'),
+        'success': _('Your password was changed.'),
         'warning': _('Changing your password will log you out of all of your other sessions.'),
     }
 
@@ -139,7 +139,8 @@ class UserChangePassword(SensitivePostParametersMixin, CsrfProtectMixin,
         return super(UserChangePassword, self).form_invalid(form)
 
     def get(self, request, *args, **kwargs):
-        if len(messages.api.get_messages(self.request)) < 1:
+        avoid_duplicate_message = util.has_pending_messages(self.request)
+        if not avoid_duplicate_message:
             messages.add_message(self.request, messages.WARNING, self.message_text['warning'])
         return super(UserChangePassword, self).get(request, *args, **kwargs)
 
@@ -197,7 +198,8 @@ class UserSwitchOnView(LoginRequiredMixin, StaffRequiredMixin,
         return super(UserSwitchOnView, self).form_valid(form)
 
     def get(self, request, *args, **kwargs):
-        if len(messages.api.get_messages(self.request)) < 1:
+        avoid_duplicate_message = util.has_pending_messages(request)
+        if not avoid_duplicate_message:
             messages.add_message(self.request, messages.WARNING,
                     _("To switch back to a privileged user, you must re-login. This is done for security reasons."))
         return super(UserSwitchOnView, self).get(request, *args, **kwargs)
