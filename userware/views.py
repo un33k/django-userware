@@ -32,11 +32,12 @@ from . import utils as util
 
 class UserAccountView(LoginRequiredMixin, TemplateView):
     """
-    Router for account settings.
+    Router for account settings or main page.
     """
-    def get_template_names(self):
-        template_name = util.get_template_path("account.html")
-        return template_name
+    def get(self, *args, **kwargs):
+        if defs.LOGIN_REDIRECT_URL:
+            return HttpResponseRedirect(defs.LOGIN_REDIRECT_URL)
+        return HttpResponseRedirect('/')
 
 
 class UserLogoutView(TemplateView):
@@ -111,7 +112,7 @@ class UserChangePassword(SensitivePostParametersMixin, CsrfProtectMixin,
     Change password for existing user.
     """
     form_class = UserPasswordChangeForm
-    success_url = reverse_lazy('user_password_change')
+    success_url = defs.LOGIN_REDIRECT_URL
     message_text = {
         'success': _('Your password changed.'),
         'warning': _('Changing your password will log you out of all of your other sessions.'),
