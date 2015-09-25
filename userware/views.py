@@ -148,7 +148,7 @@ class UserDeleteView(LoginRequiredMixin, CsrfProtectMixin, FormView):
     Delete an account.
     """
     form_class = UserDeletionForm
-    success_url = reverse_lazy('home_page')
+    success_url = '/'
     delete_warning = _("This is extremely important. If you delete your account, there is no going back")
 
     def get_template_names(self):

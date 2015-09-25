@@ -13,7 +13,7 @@ url = 'https://github.com/un33k/django-userware'
 author = 'Val Neekman'
 author_email = 'info@neekware.com'
 license = 'BSD'
-install_requires = ['']
+install_requires = ['django-toolware>=0.0.4', 'django-auditware>=0.0.1']
 classifiers = [
     'Development Status :: 3 - Alpha',
     'Environment :: Web Environment',
