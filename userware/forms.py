@@ -210,31 +210,27 @@ class UserDeletionForm(CleanSpacesMixin, forms.Form):
 
     required_css_class = 'required_field'
 
-    username = forms.CharField(
-        label=_("Username Confirmation"),
-        help_text=_("Please enter your username to confirm"),
+    username_or_email = forms.CharField(
+        label=_("Username or Email Confirmation"),
+        help_text=_("Please confirm your username or email address."),
     )
 
     password = forms.CharField(
         label=_("Password Confirmation"),
         widget=forms.PasswordInput,
-        help_text=_("Please enter your password to confirm"),
+        help_text=_("Please confirm permanent account deletion by entering your password."),
     )
 
     def __init__(self, user, *args, **kwargs):
         self.user = user
         super(UserDeletionForm, self).__init__(*args, **kwargs)
 
-    def clean_username(self):
-        username = self.cleaned_data['username']
-        user = None
-        try:
-            user = User.objects.get(username=username)
-        except:
-            pass
+    def clean_username_or_email(self):
+        username_or_email = self.cleaned_data['username_or_email']
+        user = util.get_user_by_username_or_email(username_or_email)
         if self.user != user:
-            raise forms.ValidationError(_("Invalid username. '%s' is not your username" % username))
-        return username
+            raise forms.ValidationError(_("Confirmation failed."))
+        return username_or_email
 
     def clean_password(self):
         password = self.cleaned_data["password"]
