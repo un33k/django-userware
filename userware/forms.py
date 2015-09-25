@@ -27,7 +27,10 @@ class UserCreationForm(DjangoUserCreationForm):
     pass_len = defs.USERWARE_PASSWORD_MIN_LENGTH
 
     username = forms.RegexField(
-        label=_("Username"), min_length=3, max_length=30, regex=r"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
+        label=_("Username"),
+        min_length=3,
+        max_length=32,
+        regex=r"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
         help_text=_("Username may only contain alphanumeric or dashes "
                     "and cannot begin or end with a dash"),
         error_messages={
@@ -103,7 +106,7 @@ class UserAuthenticationForm(DjangoAuthenticationForm):
 
     def __init__(self, *args, **kwargs):
         super(UserAuthenticationForm, self).__init__(*args, **kwargs)
-        self.error_messages['invalid_login'] = _("Please enter your account username or email address.")
+        self.error_messages['invalid_login'] = _("Login Failed.  Note that both fields may be case-sensitive")
         self.fields['username'].label = "Username or Email"
         self.fields['username'].help_text = "Enter your account's username or email address"
 
