@@ -19,3 +19,11 @@ def get_user_by_username_or_email(username_or_email):
     except User.DoesNotExist:
             return None
     return user
+
+
+def get_template_path(name):
+    """
+    Given a template name, it returns the relative path from the template dir.
+    """
+    path = "{}/{}".format(defs.USERWARE_TEMPLATE_BASE_DIR, name)
+    return path

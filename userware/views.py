@@ -27,13 +27,16 @@ from .forms import UserSwitchForm
 from .signals import user_switched_on
 
 from . import defs as defs
+from . import utils as util
 
 
 class UserAccountView(LoginRequiredMixin, TemplateView):
     """
     Router for account settings.
     """
-    template_name = "userware/account.html"
+    def get_template_names(self):
+        template_name = util.get_template_path("account.html")
+        return template_name
 
 
 class UserLogoutView(TemplateView):
@@ -55,11 +58,14 @@ class UserLoginView(SensitivePostParametersMixin, CsrfProtectMixin,
     Login view.
     """
     form_class = UserAuthenticationForm
-    template_name = 'userware/login_form.html'
     success_url = defs.LOGIN_REDIRECT_URL
     extra_context = {}
 
     redirect_field_name = REDIRECT_FIELD_NAME
+
+    def get_template_names(self):
+        template_name = util.get_template_path("login_form.html")
+        return template_name
 
     def get_success_url(self):
         redirect_to = self.request.REQUEST.get(self.redirect_field_name, '')
@@ -106,11 +112,14 @@ class UserChangePassword(SensitivePostParametersMixin, CsrfProtectMixin,
     """
     form_class = UserPasswordChangeForm
     success_url = reverse_lazy('user_password_change')
-    template_name = 'userware/password_change_form.html'
     message_text = {
         'success': _('Your password changed.'),
         'warning': _('Changing your password will log you out of all of your other sessions.'),
     }
+
+    def get_template_names(self):
+        template_name = util.get_template_path("password_change_form.html")
+        return template_name
 
     def get_form_kwargs(self):
         kwargs = super(UserChangePassword, self).get_form_kwargs()
@@ -139,8 +148,11 @@ class UserDeleteView(LoginRequiredMixin, CsrfProtectMixin, FormView):
     """
     form_class = UserDeletionForm
     success_url = reverse_lazy('home_page')
-    template_name = 'userware/delete_account_form.html'
     delete_warning = _("This is extremely important. If you delete your account, there is no going back")
+
+    def get_template_names(self):
+        template_name = util.get_template_path("delete_account_form.html")
+        return template_name
 
     def get_form_kwargs(self):
         kwargs = super(UserDeleteView, self).get_form_kwargs()
@@ -169,7 +181,10 @@ class UserSwitchOnView(LoginRequiredMixin, StaffRequiredMixin,
     """
     form_class = UserSwitchForm
     success_url = defs.LOGIN_REDIRECT_URL
-    template_name = 'userware/switch_user_form.html'
+
+    def get_template_names(self):
+        template_name = util.get_template_path("switch_user_form.html")
+        return template_name
 
     def form_valid(self, form):
         switched_username = form.cleaned_data['switched_username']
