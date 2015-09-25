@@ -26,7 +26,7 @@ from .forms import UserDeletionForm
 from .forms import UserSwitchForm
 from .signals import user_switched_on
 
-from . import defs as defs
+from . import defaults as defs
 from . import utils as util
 
 
