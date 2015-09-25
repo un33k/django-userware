@@ -62,7 +62,7 @@ USERWARE_RESERVED_USERNAMES = list(
     'newsfeed events active forum faq you me us his her theirs yours your avatar gravatar'
 
     # Forbidden words
-    'porn fuck shit xxx cunt pr0n abuse pussy dick piense pee piss urinate '
+    'porn fuck shit xxx cunt pr0n abuse pussy dick penis pee piss urinate'
     .split()
 )
 

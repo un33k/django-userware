@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth import get_user_model
 from django.utils.html import simple_email_re
 
@@ -26,5 +28,5 @@ def get_template_path(name):
     """
     Given a template name, it returns the relative path from the template dir.
     """
-    path = "{}/{}".format(defs.USERWARE_TEMPLATE_BASE_DIR, name)
+    path = os.path.join(defs.USERWARE_TEMPLATE_BASE_DIR, name)
     return path
