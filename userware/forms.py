@@ -189,13 +189,13 @@ class UserSetPasswordForm(DjangoSetPasswordForm):
     def __init__(self, user, *args, **kwargs):
         super(UserSetPasswordForm, self).__init__(user, *args, **kwargs)
         self.fields['new_password1'].help_text = _("Password must be minimum of %s characters" % self.pass_len)
-        self.fields['new_password2'].help_text = _("Resetting your password will log you out of all of your other sessions")
+        self.fields['new_password2'].help_text = _("Resetting your password will log you out of all of your other sessions.")
 
     def clean_new_password2(self):
         new_password2 = super(UserSetPasswordForm, self).clean_new_password2()
         if len(new_password2) < self.pass_len:
             raise forms.ValidationError(_("Password too short! minimum length is ") + " [%d]" % self.pass_len)
-        if self.user.has_usable_password(new_password2):
+        if self.user.check_password(new_password2):
             raise forms.ValidationError(_("New password is too similar to the old password. Please choose a different password."))
         force_logout(self.user)
         return new_password2
