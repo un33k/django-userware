@@ -42,36 +42,38 @@ urlpatterns = patterns('',
 
     # user forgot his/her password again. ask for username or email and send a reset link
     url(
-        r'^password/reset/$',
+        r'^password/reset/request/$',
         auth_views.password_reset,
         {
             'password_reset_form': UserPasswordResetForm,
-            'template_name': util.get_template_path('password_reset_form.html'),
-            'subject_template_name': util.get_template_path('password_reset_email_subject.txt'),
-            'email_template_name': util.get_template_path('password_reset_email.txt'),
+            'template_name': util.get_template_path('password_reset_request_form.html'),
+            'subject_template_name': util.get_template_path('password_reset_request_email_subject.txt'),
+            'email_template_name': util.get_template_path('password_reset_request_email.txt'),
+            'post_reset_redirect': 'user_password_reset_request_sent',
         },
-        name='user_password_reset',
+        name='user_password_reset_request',
     ),
 
     # an email has been sent to the provided email address with the link to reset password
     url(
-        r'^password/reset/done/$',
+        r'^password/reset/request/sent/$',
         auth_views.password_reset_done,
         {
-            'template_name': util.get_template_path('password_reset_done.html'),
+            'template_name': util.get_template_path('password_reset_request_sent.html'),
         },
-        name='user_password_reset_done',
+        name='user_password_reset_request_sent',
     ),
 
     # password reset link has been clicked on, forms allows for a new password and confirmation
     url(
-        r'^password/reset/confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
+        r'^password/reset/set/new/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
         auth_views.password_reset_confirm,
         {
             'set_password_form': UserSetPasswordForm,
-            'template_name': util.get_template_path('password_reset_confirm.html'),
+            'template_name': util.get_template_path('password_reset_set_form.html'),
+            'post_reset_redirect': 'user_password_reset_is_complete',
         },
-        name='user_password_reset_confirm',
+        name='user_password_reset_set_new',
     ),
 
     # system has changed the password and redirect to this template for the final success message
@@ -79,9 +81,9 @@ urlpatterns = patterns('',
         r'^password/reset/complete/$',
         auth_views.password_reset_complete,
         {
-            'template_name': util.get_template_path('password_reset_complete.html'),
+            'template_name': util.get_template_path('password_reset_is_complete.html'),
         },
-        name='user_password_reset_complete',
+        name='user_password_reset_is_complete',
     ),
     url(
         r'^$',

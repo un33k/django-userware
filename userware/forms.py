@@ -121,9 +121,11 @@ class UserPasswordResetForm(DjangoPasswordResetForm):
     """
     required_css_class = 'required_field'
     error_messages = {}
+
     def __init__(self, *args, **kwargs):
         super(UserPasswordResetForm, self).__init__(*args, **kwargs)
-        del self.fields['email']
+        self.fields['email'].widget = forms.HiddenInput()
+        self.fields['email'].required = False
 
         self.error_messages['invalid_login'] = _("Please enter a username or a valid email address.")
         self.error_messages = {
@@ -148,27 +150,10 @@ class UserPasswordResetForm(DjangoPasswordResetForm):
         """
         Validates that an active user exists with the given username / email address.
         """
-        dummy_user = User()
-        dummy_user.set_unusable_password()
         username_or_email = self.cleaned_data["username_or_email"]
-        if simple_email_re.match(username_or_email):
-            self.users_cache = User.objects.filter(email__iexact=username_or_email)
-            if not len(self.users_cache):
-                raise forms.ValidationError(self.error_messages['unknown_email'])
-            if not any(user.is_active for user in self.users_cache):
-                raise forms.ValidationError(self.error_messages['unknown_email'])
-            if any(user.check_password() for user in self.users_cache):
-                raise forms.ValidationError(self.error_messages['unusable_email'])
-            return username_or_email
-        else:
-            self.users_cache = User.objects.filter(username__iexact=username_or_email)
-            if not len(self.users_cache):
-                raise forms.ValidationError(self.error_messages['unknown_username'])
-            if not any(user.is_active for user in self.users_cache):
-                raise forms.ValidationError(self.error_messages['unknown_username'])
-            if any(user.check_password() for user in self.users_cache):
-                raise forms.ValidationError(self.error_messages['unusable_username'])
-            return username_or_email
+        user = util.get_user_by_username_or_email(username_or_email)
+        self.cleaned_data["email"] = username_or_email
+        return username_or_email
 
 
 class UserPasswordChangeForm(DjangoPasswordChangeForm):
@@ -189,7 +174,7 @@ class UserPasswordChangeForm(DjangoPasswordChangeForm):
         new_password2 = super(UserPasswordChangeForm, self).clean_new_password2()
         if len(new_password2) < self.pass_len:
             raise forms.ValidationError(_("Password too short! minimum length is ") + " [%d]" % self.pass_len)
-        if self.user.check_password(new_password2):
+        if self.user.has_usable_password(new_password2):
             raise forms.ValidationError(_("New password is too similar to the old password. Please choose a different password."))
         return new_password2
 
@@ -210,7 +195,7 @@ class UserSetPasswordForm(DjangoSetPasswordForm):
         new_password2 = super(UserSetPasswordForm, self).clean_new_password2()
         if len(new_password2) < self.pass_len:
             raise forms.ValidationError(_("Password too short! minimum length is ") + " [%d]" % self.pass_len)
-        if self.user.check_password(new_password2):
+        if self.user.has_usable_password(new_password2):
             raise forms.ValidationError(_("New password is too similar to the old password. Please choose a different password."))
         force_logout(self.user)
         return new_password2
@@ -246,7 +231,7 @@ class UserDeletionForm(CleanSpacesMixin, forms.Form):
 
     def clean_password(self):
         password = self.cleaned_data["password"]
-        if not self.user.check_password(password):
+        if not self.user.has_usable_password(password):
             raise forms.ValidationError(_("Invalid password, please try again."))
         return password
 
