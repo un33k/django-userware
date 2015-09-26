@@ -72,6 +72,9 @@ class UserCreationForm(DjangoUserCreationForm):
 
 
 class UserChangeForm(DjangoUserChangeForm):
+    """
+    Customized username change form.
+    """
     required_css_class = 'required_field'
 
     username = forms.RegexField(
@@ -100,8 +103,9 @@ class UserChangeForm(DjangoUserChangeForm):
 
 
 class UserAuthenticationForm(DjangoAuthenticationForm):
-    """Customized authentication form"""
-
+    """
+    Customized authentication form.
+    """
     required_css_class = 'required_field'
 
     def __init__(self, *args, **kwargs):
@@ -112,10 +116,11 @@ class UserAuthenticationForm(DjangoAuthenticationForm):
 
 
 class UserPasswordResetForm(DjangoPasswordResetForm):
-    """Customized password reset form"""
-
+    """
+    Customized password reset form.
+    """
     required_css_class = 'required_field'
-
+    error_messages = {}
     def __init__(self, *args, **kwargs):
         super(UserPasswordResetForm, self).__init__(*args, **kwargs)
         del self.fields['email']
@@ -167,13 +172,15 @@ class UserPasswordResetForm(DjangoPasswordResetForm):
 
 
 class UserPasswordChangeForm(DjangoPasswordChangeForm):
-    """Customized password change form"""
-
+    """
+    Customized password change form.
+    """
     required_css_class = 'required_field'
     pass_len = defs.USERWARE_PASSWORD_MIN_LENGTH
 
     def __init__(self, *args, **kwargs):
         super(UserPasswordChangeForm, self).__init__(*args, **kwargs)
+        self.fields.keyOrder = ['old_password', 'new_password1', 'new_password2']
         self.fields['old_password'].label = _("Current Password")
         self.fields['old_password'].help_text = _("Changing your password will log you out of all of your other sessions")
         self.fields['new_password1'].help_text = _("Password must be minimum of %s characters" % self.pass_len)
@@ -188,8 +195,9 @@ class UserPasswordChangeForm(DjangoPasswordChangeForm):
 
 
 class UserSetPasswordForm(DjangoSetPasswordForm):
-    """ Customized password reset form """
-
+    """
+    Customized password reset form.
+    """
     required_css_class = 'required_field'
     pass_len = defs.USERWARE_PASSWORD_MIN_LENGTH
 
@@ -209,8 +217,9 @@ class UserSetPasswordForm(DjangoSetPasswordForm):
 
 
 class UserDeletionForm(CleanSpacesMixin, forms.Form):
-    """ Delete a user (account) form """
-
+    """
+    Delete a user (account) form.
+    """
     required_css_class = 'required_field'
 
     username_or_email = forms.CharField(
