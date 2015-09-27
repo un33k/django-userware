@@ -32,10 +32,10 @@ class UserCreationForm(DjangoUserCreationForm):
         max_length=32,
         regex=r"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
         help_text=_("Username may only contain alphanumeric or dashes "
-                    "and cannot begin or end with a dash"),
+                    "and cannot begin or end with a dash. "),
         error_messages={
             'invalid': _("Username may only contain alphanumeric characters "
-                    " or dashes and cannot begin or end with a dash. (maximum 30 characters)")},
+                    " or dashes and cannot begin or end with a dash.")},
     )
 
     email = forms.EmailField(required=True)
@@ -44,7 +44,7 @@ class UserCreationForm(DjangoUserCreationForm):
         super(UserCreationForm, self).__init__(*args, **kwargs)
         self.error_messages['duplicate_email'] = _("A user with that email already exists.")
         self.fields['email'].help_text = _("A valid email address")
-        self.fields['password1'].help_text = _("Password must be minimum of %s characters" % self.pass_len)
+        self.fields['password1'].help_text = _("Password must be minimum of %s characters." % self.pass_len)
         self.fields.keyOrder = ['username', 'email', 'password1', 'password2']
 
     def clean_username(self):
@@ -67,7 +67,7 @@ class UserCreationForm(DjangoUserCreationForm):
     def clean_password2(self):
         password2 = super(UserCreationForm, self).clean_password2()
         if len(password2) < self.pass_len:
-            raise forms.ValidationError(_("Password too short! minimum length is ") + " [%d]" % self.pass_len)
+            raise forms.ValidationError(_("Password too short! minimum length is ") + " [%d]." % self.pass_len)
         return password2
 
 
@@ -80,10 +80,10 @@ class UserChangeForm(DjangoUserChangeForm):
     username = forms.RegexField(
         label=_("Username"), min_length=3, max_length=30, regex=r"^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$",
         help_text=_("Username may only contain alphanumeric or dashes "
-                    "and cannot begin or end with a dash"),
+                    "and cannot begin or end with a dash."),
         error_messages={
             'invalid': _("Username may only contain alphanumeric characters "
-                    " or dashes and cannot begin or end with a dash. (maximum 30 characters)")},
+                    " or dashes and cannot begin or end with a dash.")},
     )
 
     def clean_username(self):
@@ -110,9 +110,9 @@ class UserAuthenticationForm(DjangoAuthenticationForm):
 
     def __init__(self, *args, **kwargs):
         super(UserAuthenticationForm, self).__init__(*args, **kwargs)
-        self.error_messages['invalid_login'] = _("Login Failed.  Note that both fields may be case-sensitive")
+        self.error_messages['invalid_login'] = _("Login Failed.  Note that both fields may be case-sensitive.")
         self.fields['username'].label = "Username or Email"
-        self.fields['username'].help_text = "Enter your account's username or email address"
+        self.fields['username'].help_text = "Enter your account's username or email address."
 
 
 class UserPasswordResetForm(DjangoPasswordResetForm):
@@ -134,7 +134,7 @@ class UserPasswordResetForm(DjangoPasswordResetForm):
             'unusable_email': _("The user account associated with this email "
                           "address cannot reset the password."),
             'unknown_username': _("That username doesn't have an associated "
-                         "user account. Are you sure you've registered?"),
+                         "user account. Are you sure you've registered? "),
             'unusable_username': _("The user account associated with this username "
                           "address cannot reset the password."),
         }
@@ -167,13 +167,13 @@ class UserPasswordChangeForm(DjangoPasswordChangeForm):
         super(UserPasswordChangeForm, self).__init__(*args, **kwargs)
         self.fields.keyOrder = ['old_password', 'new_password1', 'new_password2']
         self.fields['old_password'].label = _("Current Password")
-        self.fields['old_password'].help_text = _("Changing your password will log you out of all of your other sessions")
-        self.fields['new_password1'].help_text = _("Password must be minimum of %s characters" % self.pass_len)
+        self.fields['old_password'].help_text = _("Changing your password will log you out of all of your other sessions.")
+        self.fields['new_password1'].help_text = _("Password must be minimum of %s characters." % self.pass_len)
 
     def clean_new_password2(self):
         new_password2 = super(UserPasswordChangeForm, self).clean_new_password2()
         if len(new_password2) < self.pass_len:
-            raise forms.ValidationError(_("Password too short! minimum length is ") + " [%d]" % self.pass_len)
+            raise forms.ValidationError(_("Password too short! minimum length is ") + " [%d]." % self.pass_len)
         if self.user.has_usable_password(new_password2):
             raise forms.ValidationError(_("New password is too similar to the old password. Please choose a different password."))
         return new_password2
@@ -188,13 +188,13 @@ class UserSetPasswordForm(DjangoSetPasswordForm):
 
     def __init__(self, user, *args, **kwargs):
         super(UserSetPasswordForm, self).__init__(user, *args, **kwargs)
-        self.fields['new_password1'].help_text = _("Password must be minimum of %s characters" % self.pass_len)
+        self.fields['new_password1'].help_text = _("Password must be minimum of %s characters." % self.pass_len)
         self.fields['new_password2'].help_text = _("Resetting your password will log you out of all of your other sessions.")
 
     def clean_new_password2(self):
         new_password2 = super(UserSetPasswordForm, self).clean_new_password2()
         if len(new_password2) < self.pass_len:
-            raise forms.ValidationError(_("Password too short! minimum length is ") + " [%d]" % self.pass_len)
+            raise forms.ValidationError(_("Password too short! minimum length is ") + " [%d]." % self.pass_len)
         if self.user.check_password(new_password2):
             raise forms.ValidationError(_("New password is too similar to the old password. Please choose a different password."))
         force_logout(self.user)
@@ -243,7 +243,7 @@ class UserSwitchForm(CleanSpacesMixin, forms.Form):
     required_css_class = 'required_field'
 
     switched_username = forms.CharField(max_length=30, label=_('Username'),
-        help_text=_("Enter the username or the email address of the account you want to switch to"),
+        help_text=_("Enter the username or the email address of the account you want to switch to."),
     )
 
     def clean_switched_username(self):
