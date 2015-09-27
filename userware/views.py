@@ -49,7 +49,7 @@ class UserLogoutView(TemplateView):
             del request.session[defs.USERWARE_SWTICHED_USER_KEY]
         if request.user.is_authenticated():
             auth_logout(request)
-            messages.add_message(self.request, messages.SUCCESS, _('You are now logged out'))
+            messages.add_message(self.request, messages.SUCCESS, _('You are now logged out.'))
         return HttpResponseRedirect(defs.LOGOUT_REDIRECT_URL)
 
 
@@ -65,7 +65,7 @@ class UserLoginView(SensitivePostParametersMixin, CsrfProtectMixin,
     redirect_field_name = REDIRECT_FIELD_NAME
 
     def get_template_names(self):
-        template_name = util.get_template_path("login_form.html")
+        template_name = util.get_template_path("account_login_form.html")
         return template_name
 
     def get_success_url(self):
@@ -151,10 +151,10 @@ class UserDeleteView(LoginRequiredMixin, CsrfProtectMixin, FormView):
     """
     form_class = UserDeletionForm
     success_url = '/'
-    delete_warning = _("This is extremely important. If you delete your account, there is no going back")
+    delete_warning = _("This is extremely important. If you delete your account, there is no going back.")
 
     def get_template_names(self):
-        template_name = util.get_template_path("delete_account_form.html")
+        template_name = util.get_template_path("account_delete_form.html")
         return template_name
 
     def get_form_kwargs(self):
@@ -186,7 +186,7 @@ class UserSwitchOnView(LoginRequiredMixin, StaffRequiredMixin,
     success_url = defs.LOGIN_REDIRECT_URL
 
     def get_template_names(self):
-        template_name = util.get_template_path("switch_user_form.html")
+        template_name = util.get_template_path("user_switch_form.html")
         return template_name
 
     def form_valid(self, form):
