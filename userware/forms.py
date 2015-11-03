@@ -113,6 +113,7 @@ class UserAuthenticationForm(DjangoAuthenticationForm):
         self.error_messages['invalid_login'] = _("Login Failed.  Note that both fields may be case-sensitive.")
         self.fields['username'].label = "Username or Email"
         self.fields['username'].help_text = "Enter your account's username or email address."
+        self.fields['username'].widget.attrs['autofocus'] = 'on'
 
 
 class UserPasswordResetForm(DjangoPasswordResetForm):
@@ -126,6 +127,7 @@ class UserPasswordResetForm(DjangoPasswordResetForm):
         super(UserPasswordResetForm, self).__init__(*args, **kwargs)
         self.fields['email'].widget = forms.HiddenInput()
         self.fields['email'].required = False
+        self.fields['email'].widget.attrs['autofocus'] = 'on'
 
         self.error_messages['invalid_login'] = _("Please enter a username or a valid email address.")
         self.error_messages = {
@@ -169,12 +171,13 @@ class UserPasswordChangeForm(DjangoPasswordChangeForm):
         self.fields['old_password'].label = _("Current Password")
         self.fields['old_password'].help_text = _("Changing your password will log you out of all of your other sessions.")
         self.fields['new_password1'].help_text = _("Password must be minimum of %s characters." % self.pass_len)
+        self.fields['old_password'].widget.attrs['autofocus'] = 'on'
 
     def clean_new_password2(self):
         new_password2 = super(UserPasswordChangeForm, self).clean_new_password2()
         if len(new_password2) < self.pass_len:
             raise forms.ValidationError(_("Password too short! minimum length is ") + " [%d]." % self.pass_len)
-        if self.user.has_usable_password(new_password2):
+        if self.user.has_usable_password():
             raise forms.ValidationError(_("New password is too similar to the old password. Please choose a different password."))
         return new_password2
 
@@ -190,6 +193,7 @@ class UserSetPasswordForm(DjangoSetPasswordForm):
         super(UserSetPasswordForm, self).__init__(user, *args, **kwargs)
         self.fields['new_password1'].help_text = _("Password must be minimum of %s characters." % self.pass_len)
         self.fields['new_password2'].help_text = _("Resetting your password will log you out of all of your other sessions.")
+        self.fields['new_password1'].widget.attrs['autofocus'] = 'on'
 
     def clean_new_password2(self):
         new_password2 = super(UserSetPasswordForm, self).clean_new_password2()
@@ -245,6 +249,11 @@ class UserSwitchForm(CleanSpacesMixin, forms.Form):
     switched_username = forms.CharField(max_length=30, label=_('Username'),
         help_text=_("Enter the username or the email address of the account you want to switch to."),
     )
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super(UserDeletionForm, self).__init__(*args, **kwargs)
+        self.fields['switched_username'].widget.attrs['autofocus'] = 'on'
 
     def clean_switched_username(self):
         username = self.cleaned_data['switched_username']
