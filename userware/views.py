@@ -69,7 +69,7 @@ class UserLoginView(SensitivePostParametersMixin, CsrfProtectMixin,
         return template_name
 
     def get_success_url(self):
-        redirect_to = self.request.REQUEST.get(self.redirect_field_name, '')
+        redirect_to = self.request.GET.get(self.redirect_field_name, '')
         if not is_safe_url(url=redirect_to, host=self.request.get_host()):
             redirect_to = resolve_url(defs.LOGIN_REDIRECT_URL)
         return redirect_to or None
