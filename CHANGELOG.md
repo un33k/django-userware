@@ -1,3 +1,9 @@
+## 0.0.5
+
+Features:
+
+  - Ready for use with Django 1.9
+
 ## 0.0.2
 
 Features:
