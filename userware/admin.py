@@ -102,9 +102,9 @@ if defs.USERWARE_REGISTER_DB_SESSION_ADMIN:
             readonly_fields = ['_session_data']
             exclude = ['session_data']
             date_hierarchy='expire_date'
-            try:
-                admin.site.unregister(Session)
-            except admin.site.AlreadyRegistered:
-                pass
-            finally:
-                admin.site.register(Session, SessionAdmin)
+        try:
+            admin.site.unregister(Session)
+        except admin.site.AlreadyRegistered:
+            pass
+        finally:
+            admin.site.register(Session, SessionAdmin)
