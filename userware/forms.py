@@ -177,7 +177,7 @@ class UserPasswordChangeForm(DjangoPasswordChangeForm):
         new_password2 = super(UserPasswordChangeForm, self).clean_new_password2()
         if len(new_password2) < self.pass_len:
             raise forms.ValidationError(_("Password too short! minimum length is ") + " [%d]." % self.pass_len)
-        if self.user.has_usable_password():
+        if self.user.check_password(new_password2):
             raise forms.ValidationError(_("New password is too similar to the old password. Please choose a different password."))
         return new_password2
 

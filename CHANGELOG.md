@@ -1,3 +1,9 @@
+## 0.0.9
+
+Features:
+
+    - Fix error in password change similar password check.
+
 ## 0.0.7
 
 Features:
