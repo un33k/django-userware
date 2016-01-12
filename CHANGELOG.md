@@ -1,5 +1,11 @@
 ## 0.0.9
 
+Bugfix:
+
+    - Fix error in password reset for when user is not registered or active
+
+## 0.0.8
+
 Features:
 
     - Fix error in password change similar password check.
