@@ -164,7 +164,8 @@ class UserPasswordResetForm(DjangoPasswordResetForm):
                 raise forms.ValidationError(self.error_messages['unusable_email'])
             else:
                 raise forms.ValidationError(self.error_messages['unusable_username'])
-        return user.email
+        self.cleaned_data["email"] = user.email
+        return self.cleaned_data
 
 
 class UserPasswordChangeForm(DjangoPasswordChangeForm):

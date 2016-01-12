@@ -1,3 +1,10 @@
+
+## 0.0.10
+
+Bugfix:
+
+    - Fix exception in clean email
+
 ## 0.0.9
 
 Bugfix:
