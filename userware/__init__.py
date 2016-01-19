@@ -1,5 +1,5 @@
 __author__ = 'Val Neekman @ Neekware Inc. [@vneekman]'
 __description__ = "A Django application that provides easy user management"
-__version__ = '0.0.10'
+__version__ = '0.0.11'
 
 default_app_config = 'userware.apps.AppConfig'

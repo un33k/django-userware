@@ -129,8 +129,8 @@ class UserPasswordResetForm(DjangoPasswordResetForm):
         self.fields['email'].required = False
         self.fields['email'].widget.attrs['autofocus'] = ''
 
-        self.error_messages['invalid_login'] = _("Please enter a username or a valid email address.")
         self.error_messages = {
+            'invalid_login': _("Please enter a username or a valid email address."),
             'unknown_email': _("That email address doesn't have an associated "
                          "user account or is not a email address."),
             'unusable_email': _("The user account associated with this email "
@@ -148,11 +148,17 @@ class UserPasswordResetForm(DjangoPasswordResetForm):
             "instructions on how to reset your password."),
     )
 
+    def clean_username_or_email(self):
+        username_or_email = self.cleaned_data.get("username_or_email")
+        if not username_or_email:
+            raise forms.ValidationError(self.error_messages['invalid_login'])
+        return username_or_email
+
     def clean(self):
         """
         Validates that an active user exists with the given username / email address.
         """
-        username_or_email = self.cleaned_data["username_or_email"]
+        username_or_email = self.clean_username_or_email()
         user = util.get_user_by_username_or_email(username_or_email)
         if not user:
             if simple_email_re.match(username_or_email):
