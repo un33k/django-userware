@@ -263,12 +263,11 @@ class UserSwitchForm(CleanSpacesMixin, forms.Form):
     required_css_class = 'required_field'
 
     switched_username = forms.CharField(max_length=30, label=_('Username'),
-        help_text=_("Enter the username or the email address of the account you want to switch to."),
+        help_text=_("Email or username of the user to switch to."),
     )
 
-    def __init__(self, user, *args, **kwargs):
-        self.user = user
-        super(UserDeletionForm, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(UserSwitchForm, self).__init__(*args, **kwargs)
         self.fields['switched_username'].widget.attrs['autofocus'] = ''
 
     def clean_switched_username(self):
@@ -277,5 +276,5 @@ class UserSwitchForm(CleanSpacesMixin, forms.Form):
         if not to_user:
             raise forms.ValidationError(_("Invalid username"))
         elif to_user.is_superuser:
-            raise forms.ValidationError(_("Switching to a superuser account is not permitted."))
+            raise forms.ValidationError(_("Operation is not permitted."))
         return username

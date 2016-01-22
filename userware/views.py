@@ -186,7 +186,7 @@ class UserSwitchOnView(LoginRequiredMixin, StaffRequiredMixin,
     success_url = defs.LOGIN_REDIRECT_URL
 
     def get_template_names(self):
-        template_name = util.get_template_path("user_switch_form.html")
+        template_name = util.get_template_path("account_switch_form.html")
         return template_name
 
     def form_valid(self, form):

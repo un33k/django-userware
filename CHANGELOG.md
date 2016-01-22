@@ -1,4 +1,16 @@
 
+## 0.0.12
+
+Bugfix:
+
+    - Fix user switch view
+
+## 0.0.11
+
+Bugfix:
+
+    - Minor fix
+
 ## 0.0.10
 
 Bugfix:
