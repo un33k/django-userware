@@ -1,4 +1,10 @@
 
+## 0.0.13
+
+Bugfix:
+
+    - added url to allow for socially connected users to request password (through their email)
+
 ## 0.0.12
 
 Bugfix:

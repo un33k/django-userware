@@ -22,6 +22,7 @@ from auditware.utils import force_logout
 
 from .forms import UserPasswordChangeForm
 from .forms import UserAuthenticationForm
+from .forms import UserPasswordResetForm
 from .forms import UserDeletionForm
 from .forms import UserSwitchForm
 from .signals import user_switched_on
@@ -203,3 +204,20 @@ class UserSwitchOnView(LoginRequiredMixin, StaffRequiredMixin,
             messages.add_message(self.request, messages.WARNING,
                     _("To switch back to a privileged user, you must re-login. This is done for security reasons."))
         return super(UserSwitchOnView, self).get(request, *args, **kwargs)
+
+
+class UserRequestPasswordView(LoginRequiredMixin, TemplateView):
+    """
+    Authenticated socially can use this to request a password.
+    """
+    def get(self, *args, **kwargs):
+        form_data = {'email': self.request.user.email}
+        form = UserPasswordResetForm(data=form_data)
+        form.full_clean()
+        subject_t = util.get_template_path('password_reset_request_email_subject.txt')
+        body_t = util.get_template_path('password_reset_request_email.txt')
+        protocol = self.request.is_secure()
+        form.save(subject_template_name=subject_t, email_template_name=body_t, use_https=protocol)
+
+        go_to = reverse_lazy('userware:user_password_reset_request_sent')
+        return HttpResponseRedirect(go_to)

@@ -86,6 +86,11 @@ urlpatterns = patterns('',
         name='user_password_reset_is_complete',
     ),
     url(
+        r'^password/request$',
+        UserRequestPasswordView.as_view(),
+        name='user_password_request'
+    ),
+    url(
         r'^$',
         UserAccountView.as_view(),
         name='user_account_redirect'
