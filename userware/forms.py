@@ -262,7 +262,7 @@ class UserSwitchForm(CleanSpacesMixin, forms.Form):
     """
     required_css_class = 'required_field'
 
-    switched_username = forms.CharField(max_length=30, label=_('Username'),
+    switched_username = forms.CharField(max_length=30, label=_('Username / Email'),
         help_text=_("Email or username of the user to switch to."),
     )
 
