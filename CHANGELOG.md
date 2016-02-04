@@ -1,4 +1,10 @@
 
+## 0.0.14
+
+Bugfix:
+
+    - User django form for sending password request emails.
+
 ## 0.0.13
 
 Bugfix:

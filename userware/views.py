@@ -11,6 +11,7 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.utils.http import is_safe_url
 from django.shortcuts import resolve_url
 from django.http import HttpResponseRedirect
+from django.contrib.auth.forms import PasswordResetForm
 
 from toolware.utils.mixin import LoginRequiredMixin
 from toolware.utils.mixin import StaffRequiredMixin
@@ -212,7 +213,7 @@ class UserRequestPasswordView(LoginRequiredMixin, TemplateView):
     """
     def get(self, *args, **kwargs):
         form_data = {'email': self.request.user.email}
-        form = UserPasswordResetForm(data=form_data)
+        form = PasswordResetForm(data=form_data)
         form.full_clean()
         subject_t = util.get_template_path('password_reset_request_email_subject.txt')
         body_t = util.get_template_path('password_reset_request_email.txt')
