@@ -25,6 +25,7 @@ from .forms import UserPasswordChangeForm
 from .forms import UserAuthenticationForm
 from .forms import UserPasswordResetForm
 from .forms import UserDeletionForm
+from .forms import UserDisableForm
 from .forms import UserSwitchForm
 from .signals import user_switched_on
 
@@ -177,6 +178,42 @@ class UserDeleteView(LoginRequiredMixin, CsrfProtectMixin, FormView):
     def get(self, request, *args, **kwargs):
         messages.add_message(self.request, messages.WARNING, self.delete_warning)
         return super(UserDeleteView, self).get(request, *args, **kwargs)
+
+
+class UserDisableView(LoginRequiredMixin, CsrfProtectMixin, FormView):
+    """
+    Disable an account.
+    """
+    form_class = UserDisableForm
+    success_url = '/'
+    disable_warning = _("This is extremely important. If you disable your account, there is no going back.")
+
+    def get_template_names(self):
+        template_name = util.get_template_path("account_disable_form.html")
+        return template_name
+
+    def get_form_kwargs(self):
+        kwargs = super(UserDisableView, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        messages.add_message(self.request, messages.SUCCESS,
+                _("Account '%s' was permanently disabled. Sorry to see you go!" % self.request.user.username))
+        self.request.user.is_active = False
+        self.request.user.set_unusable_password()
+        self.request.user.email = '{}-{}'.format('disabled', self.request.user.email)
+        self.request.user.save()
+        auth_logout(self.request)
+        return super(UserDisableView, self).form_valid(form)
+
+    def form_invalid(self, form):
+        messages.add_message(self.request, messages.WARNING, self.disable_warning)
+        return super(UserDisableView, self).form_invalid(form)
+
+    def get(self, request, *args, **kwargs):
+        messages.add_message(self.request, messages.WARNING, self.disable_warning)
+        return super(UserDisableView, self).get(request, *args, **kwargs)
 
 
 class UserSwitchOnView(LoginRequiredMixin, StaffRequiredMixin,

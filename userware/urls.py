@@ -8,38 +8,38 @@ from .forms import UserSetPasswordForm
 from . import utils as util
 from .views import *
 
-urlpatterns = patterns('',
+urlpatterns = [
 
     url(
         r'^login$',
         UserLoginView.as_view(),
         name='user_login'
     ),
-
     url(
         r'^logout$',
         UserLogoutView.as_view(),
         name='user_logout'
     ),
-
     url(
         r'^password/change$',
         UserChangePassword.as_view(),
         name='user_password_change'
     ),
-
     url(
         r'^delete$',
         UserDeleteView.as_view(),
         name='user_delete_account'
     ),
-
+    url(
+        r'^disable$',
+        UserDisableView.as_view(),
+        name='user_disable_account'
+    ),
     url(
         r'^switch/on$',
         UserSwitchOnView.as_view(),
         name='user_switch_on'
     ),
-
     # user forgot his/her password again. ask for username or email and send a reset link
     url(
         r'^password/reset/request$',
@@ -53,7 +53,6 @@ urlpatterns = patterns('',
         },
         name='user_password_reset_request',
     ),
-
     # an email has been sent to the provided email address with the link to reset password
     url(
         r'^password/reset/request/sent$',
@@ -63,7 +62,6 @@ urlpatterns = patterns('',
         },
         name='user_password_reset_request_sent',
     ),
-
     # password reset link has been clicked on, forms allows for a new password and confirmation
     url(
         r'^password/reset/set/new/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)$',
@@ -75,7 +73,6 @@ urlpatterns = patterns('',
         },
         name='user_password_reset_set_new',
     ),
-
     # system has changed the password and redirect to this template for the final success message
     url(
         r'^password/reset/complete$',
@@ -95,4 +92,5 @@ urlpatterns = patterns('',
         UserAccountView.as_view(),
         name='user_account_redirect'
     ),
-)
+
+]

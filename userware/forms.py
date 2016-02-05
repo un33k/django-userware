@@ -111,6 +111,7 @@ class UserAuthenticationForm(DjangoAuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(UserAuthenticationForm, self).__init__(*args, **kwargs)
         self.error_messages['invalid_login'] = _("Login Failed.  Note that both fields may be case-sensitive.")
+        self.error_messages['inactive'] = _("Login Failed. Please enter your username/email and password.")
         self.fields['username'].label = "Username or Email"
         self.fields['username'].help_text = "Enter your account's username or email address."
         self.fields['username'].widget.attrs['autofocus'] = ''
@@ -251,7 +252,30 @@ class UserDeletionForm(CleanSpacesMixin, forms.Form):
 
     def clean_password(self):
         password = self.cleaned_data["password"]
-        if not self.user.has_usable_password(password):
+        if not self.user.check_password(password):
+            raise forms.ValidationError(_("Invalid password, please try again."))
+        return password
+
+
+class UserDisableForm(CleanSpacesMixin, forms.Form):
+    """
+    Disable a user (account) form.
+    """
+    required_css_class = 'required_field'
+
+    password = forms.CharField(
+        label=_("Password Confirmation"),
+        widget=forms.PasswordInput,
+        help_text=_("Please confirm disabling your account permanently by entering your password."),
+    )
+
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super(UserDisableForm, self).__init__(*args, **kwargs)
+
+    def clean_password(self):
+        password = self.cleaned_data["password"]
+        if not self.user.check_password(password):
             raise forms.ValidationError(_("Invalid password, please try again."))
         return password
 

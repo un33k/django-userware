@@ -1,4 +1,10 @@
 
+## 0.0.15
+
+Features:
+
+    - Add disable user view
+
 ## 0.0.14
 
 Bugfix:
