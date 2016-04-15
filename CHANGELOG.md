@@ -1,4 +1,10 @@
 
+## 0.0.16
+
+Features:
+
+    - On disabling account, set user password to random text
+
 ## 0.0.15
 
 Features:

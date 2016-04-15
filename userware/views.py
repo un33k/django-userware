@@ -13,6 +13,7 @@ from django.shortcuts import resolve_url
 from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import PasswordResetForm
 
+from toolware.utils.generic import get_uuid
 from toolware.utils.mixin import LoginRequiredMixin
 from toolware.utils.mixin import StaffRequiredMixin
 from toolware.utils.mixin import CsrfProtectMixin
@@ -201,7 +202,8 @@ class UserDisableView(LoginRequiredMixin, CsrfProtectMixin, FormView):
         messages.add_message(self.request, messages.SUCCESS,
                 _("Account '%s' was permanently disabled. Sorry to see you go!" % self.request.user.username))
         self.request.user.is_active = False
-        self.request.user.set_unusable_password()
+        password = get_uuid(length=20, version=4)
+        self.request.user.set_password(password)
         self.request.user.email = '{}-{}'.format('disabled', self.request.user.email)
         self.request.user.save()
         auth_logout(self.request)
